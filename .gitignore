@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 
+# .txt files because I use some
+# dictionnary files that are heavy
+*.txt
+
 # C extensions
 *.so
 
