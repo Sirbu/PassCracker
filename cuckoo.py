@@ -27,25 +27,32 @@ def main():
     for line in fic.readlines():
         user = line.split(':')[0]
         passwd_data = line.split(':')[1]
-        # a number that defines which algorithm
-        # has been used to hash the password
-        # ex: 6 is SHA2-512
-        hash_type = passwd_data[1:2]
-        password = passwd_data[3:]
 
         # displaying user information
         if not (passwd_data == "x" or passwd_data == "!" or passwd_data =="!!"):
             print "[+] Cracking password for user '" + user +"'"
-            testPass(password, hash_type)
 
-def testPass(password, hash_type):
+            # a number that defines which algorithm
+            # has been used to hash the password
+            # ex: 6 is SHA2-512
+            hash_type = passwd_data.split('$')[1]
+            salt = passwd_data.split('$')[2]
+            password = passwd_data.split('$')[3]
+
+            # print "[DEBUG] Here is the hash type : " + "'" + hash_type + "'"
+            # print "[DEBUG] Here is the salt : " + "'" + salt + "'"
+            # print "[DEBUG] Here is the password : " + "'" + password + "'"
+
+            testPass(hash_type, salt, password)
+
+def testPass(hash_type, salt, password):
     if len(password) == 0:
         print "[E] The password is null !"
         exit(4)
 
     # default dictionnary, must give the possibility
     # to choose another one
-    dictionnary = "rockyou.txt"
+    dictionnary = "simple_dico.txt"
 
     dico = open(dictionnary, 'r')
 
@@ -56,15 +63,16 @@ def testPass(password, hash_type):
     for word in dico.readlines():
         # creating hash of the word
         dico_hash = hashlib.sha512()
-        dico_hash.update(word)
-
-        print "[+] Word tested : " + str(cpt) + "\r",
+        dico_hash.update(salt + password)
 
         if password == dico_hash.digest():
             print "Password found => " + word
             return
 
         cpt = cpt+1
+        print "PassHash VS Word -> " + password + " " + dico_hash.digest()
+        print "[+] Word tested : " + str(cpt) + " -> " + word + "\r",
+        # print "[DEBUG] Hash generated : " + dico_hash.digest() + " -- " +       "password hash : " + password
 
     print "No password found..."
 
