@@ -1,9 +1,11 @@
 # python 2.x
-# coding= utf-8
 
 import os
 import sys
 import hashlib
+import crypt
+
+from passlib.hash import sha512_crypt
 
 def main():
     if len(sys.argv) != 2:
@@ -61,16 +63,28 @@ def testPass(hash_type, salt, password):
     # variable to determine which algo must be used
     cpt = 0
     for word in dico.readlines():
-        # creating hash of the word
-        dico_hash = hashlib.sha512()
-        dico_hash.update(salt + password)
+        # first we must strip out the newline
+        # because it was causing the problem
+        # I've been trying to solve for several hours...
+        # Off course the hash was different that the one
+        # in the password file... BECAUSE THERE IS NO NEWLINE
+        # IN THE PASSWORD FILE !
+        word = word.strip('\n')
 
-        if password == dico_hash.digest():
+        # creating hash of the word
+        # the result will have the follwing
+        # form : $id$salt$Password
+        # so the password must be extracted
+        dico_hash = crypt.crypt(word, '$'+hash_type+'$'+salt+'$')
+
+        pass_hash = dico_hash.split('$')[3]
+
+        if password == pass_hash:
             print "Password found => " + word
             return
 
         cpt = cpt+1
-        print "PassHash VS Word -> " + password + " " + dico_hash.digest()
+
         print "[+] Word tested : " + str(cpt) + " -> " + word + "\r",
         # print "[DEBUG] Hash generated : " + dico_hash.digest() + " -- " +       "password hash : " + password
 
