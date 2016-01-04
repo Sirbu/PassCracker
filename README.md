@@ -1,12 +1,13 @@
 # Python-scripts
 Some scripts I began to write while I was reading "Violent Python".
 
-# Things to do :
+Things to do :
+--------------
 cuckoo :
--> Adapt the algorithm designated by the id in the password file
--> Multi-threading for performance
--> Display the percentage of progression (not a huge priority but could be nice)
+1. Adapt the algorithm designated by the id in the password file
+2. Multi-threading for performance
+3. Display the percentage of progression (not a huge priority but could be nice)
 
 banner :
--> Fix this shit !
--> Make it more like a simple scanner...
+1. Fix this shit !
+2. Make it more like a simple scanner...
