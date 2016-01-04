@@ -39,7 +39,7 @@ def main():
             print "[+] Cracking password for user '" + user +"'"
 
             # the variable salt is composed of the
-            # id of the algorythm used to hash and
+            # id of the algorithm used to hash and
             # the cryptgraphic salt : "$id$salt"
             # the variable password is the hashed
             # password stored in the password file
