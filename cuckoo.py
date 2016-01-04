@@ -2,10 +2,7 @@
 
 import os
 import sys
-import hashlib
 import crypt
-
-from passlib.hash import sha512_crypt
 
 def main():
     if len(sys.argv) != 2:
