@@ -4,7 +4,10 @@
 import os
 import sys
 import crypt
+from threading import *
 
+screeLock = Semaphore(value=1)
+wordsTested = 0
 
 def checkFile(filename):
     if not os.path.isfile(filename):
@@ -47,11 +50,16 @@ def main():
             salt = passwd_data.split('$')[1:3]
             password = passwd_data.split('$')[3]
 
-            testPass(salt, password, dictionnary_file)
+            # impossible to know if it works for the moment.
+            # calls to print do not work :(
+            t = Thread(target=testPass, args=(salt, password, dictionnary_file, user))
+            t.start()
 
-def testPass(salt, password, dictionnary_file):
+def testPass(salt, password, dictionnary_file, user):
     if len(password) == 0:
+        screeLock.acquire()
         print("[E] The password is null !")
+        screeLock.release()
         exit(4)
 
     dico = open(dictionnary_file, 'r', encoding='utf-8')
@@ -75,19 +83,25 @@ def testPass(salt, password, dictionnary_file):
             # form : $id$salt$Password
             # so the password must be extracted
             dico_hash = crypt.crypt(word, '$'+salt[0]+'$'+salt[1]+'$')
-
             pass_hash = dico_hash.split('$')[3]
 
             if password == pass_hash:
-                print("Password found => " + word)
+                screeLock.acquire()
+                print("Password found !\n " + word)
+                screeLock.release()
                 return 0
 
             cpt = cpt+1
 
+            screeLock.acquire()
             print("[+] Word tested : " + str(cpt), end='\r')
+            screeLock.release()
 
     except Exception as e:
+        screeLock.acquire()
         print("[E] Error : " + str(e))
+        screeLock.release()
+        dico.close()
 
     print("No password found...")
     return -1
