@@ -32,6 +32,10 @@ def main():
     fic = open(password_file, 'r', encoding='utf-8')
 
     for line in fic.readlines():
+        # Quit at last line
+        if len(line) <=1:
+            break
+
         # the password data contains the id,
         # the salt and the hashed password
         user = line.split(':')[0]
